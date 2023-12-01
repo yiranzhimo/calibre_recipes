@@ -1,0 +1,5 @@
+var DISQUSWIDGETS;
+
+if (typeof DISQUSWIDGETS != 'undefined') {
+    DISQUSWIDGETS.displayCount({"text":{"and":"\u53ca","comments":{"zero":"0 \u6761\u8bc4\u8bba","multiple":"{num} \u6761\u8bc4\u8bba","one":"1 \u6761\u8bc4\u8bba"}},"counts":[{"id":"https:\/\/www.mifengtd.cn\/articles\/worktile-v4.html","comments":0},{"id":"https:\/\/www.mifengtd.cn\/articles\/5-uncommon-habits-of-highly-productive-people.html","comments":1},{"id":"https:\/\/www.mifengtd.cn\/articles\/the-days-are-long-but-the-decades-are-short.html","comments":1},{"id":"https:\/\/www.mifengtd.cn\/articles\/time-management-dao-shu-2.html","comments":0},{"id":"https:\/\/www.mifengtd.cn\/articles\/daily-self-reflection-iaidehua.html","comments":0},{"id":"https:\/\/www.mifengtd.cn\/articles\/separate-tasks-into-actions.html","comments":0},{"id":"https:\/\/www.mifengtd.cn\/articles\/gtd-book-summary.html","comments":7},{"id":"https:\/\/www.mifengtd.cn\/articles\/time-management-dao-shu-3.html","comments":2},{"id":"https:\/\/www.mifengtd.cn\/articles\/time-management-dao-shu-1.html","comments":1},{"id":"https:\/\/www.mifengtd.cn\/articles\/runningcheese-gtd-system.html","comments":1}]});
+}
