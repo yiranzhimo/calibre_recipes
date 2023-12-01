@@ -1,0 +1,64 @@
+#!/usr/bin/env python
+# vim:fileencoding=utf-8
+# encoding: utf-8
+from calibre.web.feeds.recipes import BasicNewsRecipe
+from calibre.ebooks.BeautifulSoup import BeautifulSoup
+from urllib.request import urlopen
+import gzip
+import io
+base_url = 'http://127.0.0.1:8000'
+
+class Mind_Hacks(BasicNewsRecipe):
+
+    title = '褪墨'
+    description = u'我们信仰成长与进步，生活和自由。所以相信自律，自控和自省才是是通往幸福境界的门钥匙。'
+    cover_url = 'https://www.mifengtd.cn/static/0/mifengtd-logo.gif'
+        
+    remove_tags_before = dict(name='div', attrs={'class': "header"})
+    remove_tags_after= dict(name='div', attrs={'class': ["footer","content post e-content"]})
+    remove_tags = [dict(name='div', attrs={'class': ["secondary pure-u-1 pure-u-md-1-3 pure-u-lg-1-5","home-widget"]})]
+    
+    __author__ = 'yiranzhimo'
+    language = 'zh_CN'
+    timefmt = ''
+    encoding = 'utf-8'
+    publication_type = 'blog'
+
+    # Don't Change
+    no_stylesheets = True
+    remove_javascript = True
+    auto_cleanup = False
+
+    resolve_internal_links = True
+    delay = 1
+    simultaneous_downloads = 5
+    oldest_article = 100000
+    max_articles_per_feed = 10000
+    extra_css = 'h1{text-align:center;}'
+
+    def parse_index(self):
+        soup = self.index_to_soup("https://www.mifengtd.cn/articles/archives.html")
+        archives = soup.find('ul', class_='list')
+        feeds = []
+        articles = []
+        last_year = '2019'
+        for section in archives.findAll('a'):
+            link = "https://www.mifengtd.cn"+section['href']
+            title = section.getText()
+            article_response = urlopen(link)
+            article_buf = io.BytesIO(article_response.read())
+            article_f = gzip.GzipFile(fileobj=article_buf)
+            article_data = article_f.read().decode('utf-8')
+            article_soup = BeautifulSoup(article_data, 'html.parser')
+            time = article_soup.find('time').getText()
+            year = str.split(time, ' ')[3]
+            
+            if last_year == year:
+                articles.append({'title':title, 'url': link})
+            else:
+                feeds.append((last_year, reversed(articles)))
+                articles = []
+                articles.append({'title':title, 'url': link})
+                last_year = year
+        feeds.append((last_year, reversed(articles)))
+        return reversed(feeds)
