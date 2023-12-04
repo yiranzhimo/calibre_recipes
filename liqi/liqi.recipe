@@ -1,0 +1,67 @@
+#!/usr/bin/env python
+# vim:fileencoding=utf-8
+#!/usr/bin/env python
+# vim:fileencoding=utf-8
+# encoding: utf-8
+from bs4 import BeautifulSoup
+from urllib.request import urlopen
+import gzip
+import io
+
+class Mind_Hacks(BasicNewsRecipe):
+
+    title = '利器'
+    description = u'创造者和他们的工具'
+    cover_url = 'https://liqi.io//images/avatar.png'
+        
+    remove_tags_before = dict(name='div', attrs={'class': "group"})
+    remove_tags_after= dict(name='div', attrs={'id': ["footer"]})
+    #remove_tags = [dict(name='div', attrs={'id': ["footer"]})]
+    
+    __author__ = 'yiranzhimo'
+    language = 'zh_CN'
+    timefmt = ''
+    encoding = 'utf-8'
+    publication_type = 'blog'
+
+    # Don't Change
+    no_stylesheets = True
+    remove_javascript = True
+    auto_cleanup = False
+
+    resolve_internal_links = True
+    delay = 1
+    simultaneous_downloads = 5
+    oldest_article = 100000
+    max_articles_per_feed = 10000
+    extra_css = 'h1{text-align:center;}'
+
+    def parse_index(self):
+        soup = self.index_to_soup("https://liqi.io/posts/")
+        archives = soup.findAll('div', class_='title')
+        archives.pop()
+        feeds = []
+        articles = []
+        last_year = '2019'
+        for archive in archives:
+            a_tag = archive.find('a')
+            link = a_tag.get('href')
+            title = a_tag.getText()
+            article_data = urlopen(link)
+            article_soup = BeautifulSoup(article_data, 'html.parser')
+            time_element = article_soup.find('div', class_='tip')
+            if time_element is not None:
+                time = article_soup.find('div', class_='tip').getText()
+                year = str.split(time, ' ')[2]
+            else:
+                year = "2018"
+            if last_year == year:
+                articles.append({'title':title, 'url': link})
+            else:
+                feeds.append((last_year, reversed(articles)))
+                articles = []
+                articles.append({'title':title, 'url': link})
+                last_year = year
+        feeds.append((last_year, reversed(articles)))
+        return reversed(feeds)
+    
